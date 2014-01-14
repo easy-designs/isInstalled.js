@@ -62,7 +62,7 @@
 			body.appendChild( el );
 			
 			p_len = prefixes.length;
-			while ( i-- )
+			while ( p_len )
 			{
 				if ( computed( el, ':' + + 'full-screen' ).getPropertyValue( property ) == value )
 				{
