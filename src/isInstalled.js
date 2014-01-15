@@ -9,24 +9,23 @@
  **/
 (function( window, document ){
 	
-	var navigator = window.navigator,
-		head = document.head,
-		body = document.body;
+	var navigator = window.navigator;
 	
 	function isInstalled()
 	{
-		if ( ! 'getComputedStyle' in window )
-		{
-			return false;
-		}
-		
 		if ( 'standalone' in navigator )
 		{
 			return navigator.standalone;
 		}
 		else
 		{
-			var el = document.createElement('div'),
+			if ( ! 'getComputedStyle' in window )
+			{
+				return false;
+			}
+
+			var standalone = false,
+				el = document.createElement('div'),
 				styles = document.createElement('style'),
 				rule_tpl = '#isInstalledTest:{prefix}full-screen { {property}: {value}; }',
 				property = 'color',
@@ -36,6 +35,8 @@
 				],
 				p_len = prefixes.length,
 				css = '',
+				head = document.head,
+				body = document.body,
 				computed = window.getComputedStyle;
 			
 			// prep the element
@@ -66,13 +67,26 @@
 			{
 				if ( computed( el, ':' + + 'full-screen' ).getPropertyValue( property ) == value )
 				{
-					return true;
+					standalone = true;
 				}
 			}
-			return ( computed( el, ':fullscreen' ).getPropertyValue( property ) == value );
+			if ( ! standalone )
+			{
+				standalone = ( computed( el, ':fullscreen' ).getPropertyValue( property ) == value );
+			}
+			
+			body.removeChild( el );
+			
+			el = null;
+			styles = null;
+			head = null;
+			body = null;
+			
+			return standalone;
 		}
 	}
 	
 	window.isInstalled = isInstalled();
+	
 	
 }( this, document ));
