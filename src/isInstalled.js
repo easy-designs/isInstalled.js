@@ -17,6 +17,10 @@
 		{
 			return navigator.standalone;
 		}
+		else if ( 'mozApps' in navigator )
+		{
+			return !window.locationbar.visible;
+		}
 		else
 		{
 			if ( ! 'getComputedStyle' in window )
